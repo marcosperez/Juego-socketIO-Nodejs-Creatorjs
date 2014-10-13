@@ -1,0 +1,65 @@
+<% include /template/header.html %>
+    <script>
+
+    var cuadro1,cuadro2,cuadro3,cuadro4,stage,btn;
+
+    var reloj,tiempoInicial,tiempoFinal;
+
+    $( document ).ready(function() {
+      init();
+    });
+    function init() {
+
+        stage = new createjs.Stage("Canvas");
+        
+        
+        cuadro1 = new createjs.Shape();
+        cuadro1.graphics.beginFill("blue").drawRect(0, 0, 200, 200);
+        stage.addChild(cuadro1);
+        cuadro2 = new createjs.Shape();
+        cuadro2.graphics.beginFill("red").drawRect(200, 0, 200, 200);
+        stage.addChild(cuadro2);
+        cuadro3 = new createjs.Shape();
+        cuadro3.graphics.beginFill("yellow").drawRect(0, 200, 200, 200);
+        stage.addChild(cuadro3);
+        cuadro4 = new createjs.Shape();
+        cuadro4.graphics.beginFill("green").drawRect(200, 200, 200, 200);
+        stage.addChild(cuadro4);
+
+        reloj = createjs.Ticker.on("tick", tick);
+        reloj.Ticker.setFPS(5);
+        
+
+        stage.update();
+
+    }
+
+    function tick(evt){
+        
+        stage.update(evt);
+    }
+
+    function comenzar(){
+       orden = [1,2,3,4];
+
+       objetos = {1:cuadro1,
+         2:cuadro2,
+        3:cuadro3,
+        4:cuadro4};
+
+        orden.forEach(function(valor){
+            tiempoInicial = createjs.Ticker.getTime(true);
+            movimientos.enqueue(objetos[valor]);
+        })
+    }
+
+
+
+ 
+    </script>
+	<center><h1><%=title %></h1></center>
+    <button type="button" onClick="comenzar();">Comenzar</button>
+    <canvas id="Canvas" width="1200" height="800">
+        alternate content
+    </canvas>
+<% include /template/footer.html %>

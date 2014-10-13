@@ -1,0 +1,138 @@
+<% include /template/header.html %>
+    <script>
+
+    	var circle ,stage,pausa,output, shape, oldX, oldY, size, color,puedoPintar=0;
+    	$( document ).ready(function() {
+     		 init();
+   		});
+
+        function init() {
+
+        	stage = new createjs.Stage("Canvas");
+
+        	pausa = 1
+        	shape = new createjs.Shape();
+        	stage.addChild(shape);
+        				
+			createjs.Ticker.on("tick", stage);
+
+
+            circle = new createjs.Shape();
+			circle.graphics.beginFill("red").drawCircle(0, 0, 50);
+			circle.x = 100;
+			circle.y = 400;
+
+			createjs.Ticker.on("tick", tick);
+			createjs.Ticker.setFPS(30);
+
+			stage.addChild(circle);
+
+	
+			var imagen = new createjs.Bitmap("/images/code-jam.png");
+			imagen.x=0;
+			imagen.y=0;
+			stage.addChild(imagen);
+
+			var text = new createjs.Text("Hello World", "bold 86px Arial", "#ff7700");
+			text.text=stage.canvas.width-500;
+			text.x=600;
+			text.y=50;
+
+			text.on("click", function(evt) {
+			    alert("El texto dice: "+evt.target.text);
+			});
+
+			stage.addChild(text);
+
+			stage.on("stagemousedown", function(event) {
+				color = createjs.Graphics.getHSL(Math.random()*360, 100, 50);
+				size = 10;
+				puedoPintar=1
+			})
+
+			stage.on("keydown",function(e){
+				alert("la tecla fue... "+ e.keydown)
+			})
+
+			stage.on("stagemouseup", function(event) {
+				puedoPintar = 0;
+
+			})
+
+        	stage.on("stagemousemove",function(evt) {
+        		if (puedoPintar){
+					if (oldX) {
+						shape.graphics.beginStroke(color)
+									  .setStrokeStyle(size, "round")
+									  .moveTo(oldX, oldY)
+									  .lineTo(evt.stageX, evt.stageY);
+						stage.update(evt);
+					}	
+				}
+				oldX = evt.stageX;
+				oldY = evt.stageY;
+			})
+
+			circle.on("pressmove", function(evt) {
+			    //alert("type: "+evt.type+" target: "+evt.target+" stageX: "+evt.stageX);
+			    circle.x=evt.stageX;
+			    circle.y=evt.stageY;
+
+			    
+		        circle2 = new createjs.Shape();
+				circle2.graphics.beginFill("white").drawCircle(0, 0, 40);
+				circle2.x = circle.x;
+				circle2.y = circle.y;
+
+			    stage.addChild(circle2);
+			    stage.update(evt);
+			});//
+
+			var data = new createjs.SpriteSheet({
+			"images": ["images/character2.png"],
+			"frames": {"regX": 0, "height": 96, "count": 10, "regY": 0, "width": 75},
+			"animations": {"walk": [0, 9]}
+			});
+			character = new createjs.Sprite(data, "walk");
+			character.play();
+
+			stage.update();
+
+
+        }
+
+
+
+        
+        function cambiarFPS(valor){
+        	createjs.Ticker.setFPS(valor);
+        }
+
+        function tick(event) {
+			stage.update(event); // important!!
+		}
+
+		function pausar(){
+			if (pausa==1) {
+				pausa=0;
+			} else {
+				pausa=1;
+			}
+		}
+    </script>
+
+	<button type="button" onClick="pausar();">Pausa la musica</button>
+	<select onchange="cambiarFPS(this.value);">
+		<option value="10">10 fps</option>
+		<option value="20" selected>20 fps</option>
+		<option value="30">30 fps</option>
+		<option value="40">40 fps</option>
+		<option value="50">50 fps</option>
+		<option value="60">60 fps</option>
+	</select><br>
+
+    <canvas id="Canvas" width="1200" height="3000">
+        alternate content
+    </canvas>
+
+<% include /template/footer.html %>
